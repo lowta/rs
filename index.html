@@ -54,6 +54,11 @@
       border-radius: 22px; box-shadow: 0 12px 30px rgb(38 55 70 / 18%);
     }
     .foto-slider.vertical { aspect-ratio: 3 / 4; max-height: 56vh; }
+    .foto-slider.completa { object-fit: contain; background: #1f2930; }
+    .video-slider {
+      display: block; width: 100%; max-height: 56vh; aspect-ratio: 9 / 16; object-fit: contain;
+      border-radius: 22px; background: #111820; box-shadow: 0 12px 30px rgb(38 55 70 / 18%);
+    }
     .pie-foto {
       margin: 0; padding: 15px 18px; border-radius: 18px; background: #fff; color: #263746;
       font: 600 clamp(16px, 4.5vw, 20px)/1.35 Arial, sans-serif;
@@ -134,6 +139,19 @@
         foto: 'assets/foto-03.png',
         alternativo: 'Un atardecer compartido visto desde una ventana',
         subtitulo: 'Después de muchos atardeceres compartidos',
+        vertical: true,
+        completa: true
+      },
+      {
+        tipo: 'video',
+        video: 'assets/besos.mp4',
+        subtitulo: 'Después de muchos besos'
+      },
+      {
+        tipo: 'foto',
+        foto: 'assets/foto-05.jpg',
+        alternativo: 'Un momento divertido con expresión dramática',
+        subtitulo: 'Después de tantos momentos de drama queen (cara de enfado coming…)',
         vertical: true
       },
       {
@@ -141,6 +159,13 @@
         foto: 'assets/foto-04.png',
         alternativo: 'Una aventura compartida preparando comida en el coche',
         subtitulo: 'Después de algunas aventuras compartidas',
+        vertical: true
+      },
+      {
+        tipo: 'pregunta',
+        foto: 'assets/pregunta-final.jpg',
+        alternativo: 'Una mano formando medio corazón sobre una cabeza',
+        subtitulo: 'Entonces… la pregunta importante prefiero hacértela mirándote a los ojos. Ahora mirame.',
         vertical: true
       }
     ];
@@ -150,29 +175,48 @@
 
     function contenidoPagina() {
       const pagina = pantallas[paginaActual];
-      tarjeta.classList.toggle('con-foto', pagina.tipo === 'foto');
+      tarjeta.classList.toggle('con-foto', pagina.tipo === 'foto' || pagina.tipo === 'video' || pagina.tipo === 'pregunta');
       const volver = paginaActual > 0
         ? '<button class="secundario" type="button" data-accion="volver">← Volver</button>'
         : '';
-      const etiqueta = paginaActual === pantallas.length - 1 ? 'Ver la pregunta&nbsp; →' : 'Continuar&nbsp; →';
-      const contenido = pagina.tipo === 'portada'
-        ? `<div class="contenido-portada"><h1>${pagina.titulo}</h1></div>`
-        : `<div class="contenido-foto">
-            ${pagina.foto
-              ? `<img class="foto-slider ${pagina.vertical ? 'vertical' : ''}" src="${pagina.foto}" alt="${pagina.alternativo}">`
-              : '<div class="foto-slider" role="img" aria-label="Espacio reservado para una foto"></div>'}
-            <p class="pie-foto">${pagina.subtitulo}</p>
-          </div>`;
+      const etiqueta = paginaActual === pantallas.length - 2 ? 'Ver la pregunta&nbsp; →' : 'Continuar&nbsp; →';
+      let contenido;
+      if (pagina.tipo === 'portada') {
+        contenido = `<div class="contenido-portada"><h1>${pagina.titulo}</h1></div>`;
+      } else if (pagina.tipo === 'video') {
+        contenido = `<div class="contenido-foto">
+          <video class="video-slider" src="${pagina.video}" autoplay muted loop playsinline preload="auto" aria-label="Un recuerdo de muchos besos"></video>
+          <p class="pie-foto">${pagina.subtitulo}</p>
+        </div>`;
+      } else if (pagina.tipo === 'pregunta') {
+        contenido = `<div class="contenido-foto">
+          <img class="foto-slider vertical completa" src="${pagina.foto}" alt="${pagina.alternativo}">
+          <p class="pie-foto">${pagina.subtitulo}</p>
+        </div>`;
+      } else {
+        contenido = `<div class="contenido-foto">
+          ${pagina.foto
+            ? `<img class="foto-slider ${pagina.vertical ? 'vertical' : ''} ${pagina.completa ? 'completa' : ''}" src="${pagina.foto}" alt="${pagina.alternativo}">`
+            : '<div class="foto-slider" role="img" aria-label="Espacio reservado para una foto"></div>'}
+          <p class="pie-foto">${pagina.subtitulo}</p>
+        </div>`;
+      }
 
-      tarjeta.innerHTML = `
-        ${contenido}
+      const navegacion = pagina.tipo === 'pregunta' ? '' : `
         <div class="navegacion">
           ${volver}
           <button type="button" data-accion="continuar">${etiqueta}</button>
-        </div>
+        </div>`;
+
+      tarjeta.innerHTML = `
+        ${contenido}
+        ${navegacion}
         <div class="progreso" aria-label="Página ${paginaActual + 1} de ${pantallas.length}">
           ${pantallas.map((_, indice) => `<span class="punto ${indice === paginaActual ? 'activo' : ''}"></span>`).join('')}
         </div>`;
+
+      const video = tarjeta.querySelector('video');
+      if (video) video.play().catch(() => {});
     }
 
     function cambiarPagina(direccion) {
