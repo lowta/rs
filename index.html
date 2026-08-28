@@ -53,6 +53,7 @@
       display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: center;
       border-radius: 22px; box-shadow: 0 12px 30px rgb(38 55 70 / 18%);
     }
+    .foto-slider.vertical { aspect-ratio: 3 / 4; max-height: 56vh; }
     .pie-foto {
       margin: 0; padding: 15px 18px; border-radius: 18px; background: #fff; color: #263746;
       font: 600 clamp(16px, 4.5vw, 20px)/1.35 Arial, sans-serif;
@@ -130,9 +131,10 @@
       },
       {
         tipo: 'foto',
-        foto: '',
-        alternativo: '',
-        subtitulo: 'Y aquí, otro momento que quiero recordar contigo.'
+        foto: 'assets/foto-03.png',
+        alternativo: 'Un atardecer compartido visto desde una ventana',
+        subtitulo: 'Después de muchos atardeceres compartidos',
+        vertical: true
       }
     ];
 
@@ -150,7 +152,7 @@
         ? `<div class="contenido-portada"><h1>${pagina.titulo}</h1></div>`
         : `<div class="contenido-foto">
             ${pagina.foto
-              ? `<img class="foto-slider" src="${pagina.foto}" alt="${pagina.alternativo}">`
+              ? `<img class="foto-slider ${pagina.vertical ? 'vertical' : ''}" src="${pagina.foto}" alt="${pagina.alternativo}">`
               : '<div class="foto-slider" role="img" aria-label="Espacio reservado para una foto"></div>'}
             <p class="pie-foto">${pagina.subtitulo}</p>
           </div>`;
