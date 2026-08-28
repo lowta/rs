@@ -202,11 +202,12 @@
         </div>`;
       }
 
-      const navegacion = pagina.tipo === 'pregunta' ? '' : `
-        <div class="navegacion">
-          ${volver}
-          <button type="button" data-accion="continuar">${etiqueta}</button>
-        </div>`;
+      const navegacion = pagina.tipo === 'pregunta'
+        ? `<div class="navegacion">${volver}</div>`
+        : `<div class="navegacion">
+            ${volver}
+            <button type="button" data-accion="continuar">${etiqueta}</button>
+          </div>`;
 
       tarjeta.innerHTML = `
         ${contenido}
